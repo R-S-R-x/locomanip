@@ -1,0 +1,13 @@
+#usda 1.0
+(
+    defaultPrim = "b2_z1"
+    doc = """Generated from Composed Stage of root layer C:\\project\\atec2\\LeggedManip_Lab\\source\\LeggedManip_Lab\\LeggedManip_Lab\\assets\\b2_piper\\b2_piper.usd
+"""
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "b2_z1"
+{
+}
+

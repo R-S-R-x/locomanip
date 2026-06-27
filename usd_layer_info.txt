@@ -1,0 +1,41 @@
+
+====================================================================================================
+C:\project\atec2\LeggedManip_Lab\source\LeggedManip_Lab\LeggedManip_Lab\assets\b2_z1\b2_z1.usd
+identifier: C:/project/atec2/LeggedManip_Lab/source/LeggedManip_Lab/LeggedManip_Lab/assets/b2_z1/b2_z1.usd
+defaultPrim: b2_z1
+subLayerPaths: []
+rootPrims:
+  prim: b2_z1 specifier: Sdf.SpecifierDef type: Xform
+    references: []
+    payloads: []
+    info keys: ['specifier', 'variantSelection', 'variantSetNames', 'typeName']
+
+====================================================================================================
+C:\project\atec2\LeggedManip_Lab\source\LeggedManip_Lab\LeggedManip_Lab\assets\b2_piper\b2_piper.usd
+identifier: C:/project/atec2/LeggedManip_Lab/source/LeggedManip_Lab/LeggedManip_Lab/assets/b2_piper/b2_piper.usd
+defaultPrim: b2_z1
+subLayerPaths: []
+rootPrims:
+  prim: b2_z1 specifier: Sdf.SpecifierDef type: Xform
+    references: []
+    payloads: []
+    info keys: ['specifier', 'variantSelection', 'variantSetNames', 'typeName']
+
+====================================================================================================
+C:\project\atec2\LeggedManip_Lab\source\LeggedManip_Lab\LeggedManip_Lab\assets\b2_piper\b2_piper.usda
+identifier: C:/project/atec2/LeggedManip_Lab/source/LeggedManip_Lab/LeggedManip_Lab/assets/b2_piper/b2_piper.usda
+defaultPrim: b2_description
+subLayerPaths: ['../_piper/piper_flattened.usd']
+rootPrims:
+  prim: b2_description specifier: Sdf.SpecifierDef type: Xform
+    references: []
+    payloads: []
+    info keys: ['specifier', 'variantSelection', 'variantSetNames', 'typeName']
+  prim: Render specifier: Sdf.SpecifierDef type: 
+    references: []
+    payloads: []
+    info keys: ['specifier']
+  prim: piper specifier: Sdf.SpecifierOver type: 
+    references: []
+    payloads: []
+    info keys: ['specifier']
