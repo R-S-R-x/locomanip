@@ -42,8 +42,8 @@ B2PIPER_DEFAULT_ARM_POSE = {
     "arm_joint4": 0.0,
     "arm_joint5": 0.8,
     "arm_joint6": 0.0,
-    "arm_joint7": 0.04,
-    "arm_joint8": 0.04,
+    "arm_joint7": 0.03,
+    "arm_joint8": -0.03,
 }
 
 ##
@@ -92,7 +92,7 @@ B2_PIPER_CFG = ArticulationCfg(
             "RL_calf_joint": -1.5,
             "RR_calf_joint": -1.5,
             # arm
-            "arm_joint.*": 0.0,
+            **B2PIPER_DEFAULT_ARM_POSE,
         },
         joint_vel={".*": 0.0},
     ),

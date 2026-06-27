@@ -55,6 +55,10 @@ class B2PiperFlatEnvCfg(LeggedManipLabEnvCfg):
         self.actions.joint_pos.preserve_order = True
 
         # rewards
+        self.rewards.end_effector_position_tracking_exp.weight = 5.0
+        self.rewards.end_effector_position_tracking_exp.params["std"] = 0.45
+        self.rewards.arm_deviation.weight = -0.02
+        self.rewards.arm_deviation.params["asset_cfg"].joint_names = B2PIPER_POLICY_JOINT_NAMES[12:]
         self.rewards.track_base_height_exp.params["target_height"] = 0.48
 
         # terminals
