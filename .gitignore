@@ -88,3 +88,4 @@ __pycache__/
 *.pyc 
 logs/ 
 outputs/ 
+*.usda 
