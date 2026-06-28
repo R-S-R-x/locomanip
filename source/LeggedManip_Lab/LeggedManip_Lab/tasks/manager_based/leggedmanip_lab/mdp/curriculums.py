@@ -158,6 +158,7 @@ def pos_cmd_levels(
     env,
     env_ids: Sequence[int],
     reward_term_name: str = "end_effector_position_tracking_exp",
+    success_ratio: float = 0.8,
 ) -> torch.Tensor:
     cfg = env.command_manager.get_term("ee_pose").cfg
 
@@ -193,7 +194,7 @@ def pos_cmd_levels(
             reward = torch.mean(reward_sums[env_ids]) / env.max_episode_length_s
             reward_term_cfg = env.reward_manager.get_term_cfg(reward_term_name)
 
-            if reward > reward_term_cfg.weight * 0.8:
+            if reward > reward_term_cfg.weight * success_ratio:
                 pos_delta = torch.tensor([-0.05, 0.05], device=env.device)
                 ori_delta = torch.tensor([-3.14 / 18, 3.14 / 18], device=env.device)
                 force_delta = torch.tensor([-5.0, 5.0], device=env.device)
