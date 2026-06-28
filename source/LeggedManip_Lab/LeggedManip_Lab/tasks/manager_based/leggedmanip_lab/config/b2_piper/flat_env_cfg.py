@@ -17,12 +17,13 @@ from ...leggedmanip_lab_env_cfg import LeggedManipLabEnvCfg
 from LeggedManip_Lab.assets.b2_piper.b2_piper_articulation_cfg import (
     B2_PIPER_CFG,
     B2PIPER_JOINT_NAMES,
+    B2PIPER_POLICY_JOINT_NAMES,
 )
 from LeggedManip_Lab.tasks.manager_based.leggedmanip_lab.leggedmanip_lab_env_cfg import *
 
 
 @configclass
-class   (ObservationsCfg):
+class B2PiperTaskBObservationsCfg(ObservationsCfg):
     @configclass
     class PolicyCfg(ObsGroup):
         base_lin_vel = ObsTerm(func=mdp.base_lin_vel, scale=2.0)
@@ -82,37 +83,58 @@ class B2PiperFlatEnvCfg(LeggedManipLabEnvCfg):
 
         # commands
         self.commands.base_velocity.curriculum_enabled = True
+        self.commands.base_velocity.rel_standing_envs = 0.0
+        self.commands.base_velocity.resampling_time_range = (6.0, 8.0)
+        self.commands.base_velocity.ranges.lin_vel_x = (0.25, 0.45)
+        self.commands.base_velocity.ranges.lin_vel_y = (-0.05, 0.05)
+        self.commands.base_velocity.ranges.ang_vel_z = (-0.10, 0.10)
+        self.commands.base_velocity.limit_ranges.lin_vel_x = (0.25, 1.00)
+        self.commands.base_velocity.limit_ranges.lin_vel_y = (-0.25, 0.25)
+        self.commands.base_velocity.limit_ranges.ang_vel_z = (-0.50, 0.50)
         self.commands.ee_pose.curriculum_enabled = True
-        self.commands.ee_pose.ranges.pos_x = (0.35, 0.45)
-        self.commands.ee_pose.ranges.pos_y = (-0.08, 0.08)
-        self.commands.ee_pose.ranges.pos_z = (0.0, 0.15)
-        self.commands.ee_pose.limit_ranges.pos_x = (0.35, 0.85)
-        self.commands.ee_pose.limit_ranges.pos_y = (-0.35, 0.35)
-        self.commands.ee_pose.limit_ranges.pos_z = (-0.2, 0.5)
-        self.commands.ee_pose.limit_ranges.roll = (-0.6, 0.6)
-        self.commands.ee_pose.limit_ranges.pitch = (-0.6, 0.6)
-        self.commands.ee_pose.limit_ranges.yaw = (-0.8, 0.8)
+        self.commands.ee_pose.resampling_time_range = (6.0, 8.0)
+        self.commands.ee_pose.ranges.pos_x = (0.50, 0.65)
+        self.commands.ee_pose.ranges.pos_y = (-0.05, 0.05)
+        self.commands.ee_pose.ranges.pos_z = (-0.38, -0.30)
+        self.commands.ee_pose.ranges.roll = (-0.15, 0.15)
+        self.commands.ee_pose.ranges.pitch = (-0.20, 0.20)
+        self.commands.ee_pose.ranges.yaw = (-0.20, 0.20)
+        self.commands.ee_pose.limit_ranges.pos_x = (0.50, 0.90)
+        self.commands.ee_pose.limit_ranges.pos_y = (-0.25, 0.25)
+        self.commands.ee_pose.limit_ranges.pos_z = (-0.44, -0.24)
+        self.commands.ee_pose.limit_ranges.roll = (-0.30, 0.30)
+        self.commands.ee_pose.limit_ranges.pitch = (-0.40, 0.40)
+        self.commands.ee_pose.limit_ranges.yaw = (-0.40, 0.40)
 
         # events
         self.events.push_robot = None
 
         # actions
-        self.actions.joint_pos.joint_names = B2PIPER_JOINT_NAMES
-        self.actions.joint_pos.scale = 0.5
+        self.actions.joint_pos.joint_names = B2PIPER_POLICY_JOINT_NAMES
+        self.actions.joint_pos.scale = 0.25
         self.actions.joint_pos.clip = None
         self.actions.joint_pos.use_default_offset = True
         self.actions.joint_pos.preserve_order = True
 
         # rewards
-        self.curriculum.pos_cmd_levels.params["success_ratio"] = 0.25
-        self.rewards.end_effector_position_tracking_exp.weight = 6.0
-        self.rewards.end_effector_position_tracking_exp.params["std"] = 0.45
-        self.rewards.end_effector_orientation_tracking.weight = -2.0
-        self.rewards.track_lin_vel_xy_exp.weight = 2.0
-        self.rewards.track_ang_vel_z_exp.weight = 1.0
-        self.rewards.action_rate_l2.weight = -0.02
-        self.rewards.arm_deviation.weight = -0.02
+        self.curriculum.lin_vel_cmd_levels.params["reward_term_name"] = "track_lin_vel_xy_exp"
+        self.curriculum.ang_vel_cmd_levels.params["reward_term_name"] = "track_ang_vel_z_exp"
+        self.curriculum.pos_cmd_levels.params["success_ratio"] = 0.35
+        self.rewards.end_effector_position_tracking_exp.weight = 3.5
+        self.rewards.end_effector_position_tracking_exp.params["std"] = 0.30
+        self.rewards.end_effector_orientation_tracking.weight = -0.5
+        self.rewards.track_lin_vel_xy_exp.weight = 8.0
+        self.rewards.track_lin_vel_xy_exp.params["std"] = 0.35
+        self.rewards.track_ang_vel_z_exp.weight = 0.8
+        self.rewards.track_ang_vel_z_exp.params["std"] = 0.35
+        self.rewards.feet_air_time.weight = 1.0
+        self.rewards.feet_air_time.params["threshold"] = 0.35
+        self.rewards.feet_long_air.weight = -0.3
+        self.rewards.air_time_variance.weight = -0.5
+        self.rewards.action_rate_l2.weight = -0.04
+        self.rewards.arm_deviation.weight = -0.01
         self.rewards.arm_deviation.params["asset_cfg"].joint_names = B2PIPER_JOINT_NAMES[12:18]
+        self.rewards.flat_orientation_l2.weight = -0.7
         self.rewards.track_base_height_exp.params["target_height"] = 0.48
 
         # terminals

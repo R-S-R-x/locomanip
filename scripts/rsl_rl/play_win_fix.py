@@ -186,8 +186,21 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         agent_cfg_dict = agent_cfg.to_dict()
 
         # 兼容旧版 rsl_rl：旧版 PPO.__init__ 不接受 optimizer 参数
-        if "algorithm" in agent_cfg_dict and "optimizer" in agent_cfg_dict["algorithm"]:
-            agent_cfg_dict["algorithm"].pop("optimizer")
+        if "algorithm" in agent_cfg_dict:
+            for k in [
+                "optimizer",
+                "share_cnn_encoders",
+                "state_dependent_std",
+            ]:
+                agent_cfg_dict["algorithm"].pop(k, None)
+
+        if "alg" in agent_cfg_dict:
+            for k in [
+                "optimizer",
+                "share_cnn_encoders",
+                "state_dependent_std",
+            ]:
+                agent_cfg_dict["alg"].pop(k, None)
 
         runner = OnPolicyRunner(env, agent_cfg_dict, log_dir=None, device=agent_cfg.device)
         # runner = OnPolicyRunner(env, agent_cfg.to_dict(), log_dir=None, device=agent_cfg.device)
