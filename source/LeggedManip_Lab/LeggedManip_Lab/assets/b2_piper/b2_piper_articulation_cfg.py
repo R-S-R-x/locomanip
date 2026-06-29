@@ -116,7 +116,7 @@ B2_PIPER_CFG = ArticulationCfg(
             damping=3.0,
             armature=0.01,
             min_delay=0,
-            max_delay=4,
+            max_delay=0,
             friction=0.01,
         ),
         "arm_joint2": DelayedPDActuatorCfg(
@@ -127,7 +127,7 @@ B2_PIPER_CFG = ArticulationCfg(
             damping=2.0,
             armature=0.01,
             min_delay=0,
-            max_delay=4,
+            max_delay=0,
             friction=0.01,
         ),
         "arm_joint3": DelayedPDActuatorCfg(
@@ -138,7 +138,7 @@ B2_PIPER_CFG = ArticulationCfg(
             damping=3.0,
             armature=0.01,
             min_delay=0,
-            max_delay=4,
+            max_delay=0,
             friction=0.01,
         ),
         "arm_joint4": DelayedPDActuatorCfg(
@@ -149,7 +149,7 @@ B2_PIPER_CFG = ArticulationCfg(
             damping=3.0,
             armature=0.01,
             min_delay=0,
-            max_delay=4,
+            max_delay=0,
             friction=0.01,
         ),
         "arm_joint5": DelayedPDActuatorCfg(
@@ -160,7 +160,7 @@ B2_PIPER_CFG = ArticulationCfg(
             damping=2.5,
             armature=0.01,
             min_delay=0,
-            max_delay=4,
+            max_delay=0,
             friction=0.01,
         ),
         "arm_joint6": DelayedPDActuatorCfg(
@@ -171,7 +171,7 @@ B2_PIPER_CFG = ArticulationCfg(
             damping=1.0,
             armature=0.01,
             min_delay=0,
-            max_delay=4,
+            max_delay=0,
             friction=0.01,
         ),
         "gripper": DelayedPDActuatorCfg(

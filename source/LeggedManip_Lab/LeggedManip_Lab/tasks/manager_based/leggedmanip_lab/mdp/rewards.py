@@ -63,6 +63,30 @@ def position_command_b_error_exp(
     return torch.exp(-torch.sum(torch.square(ee_pos_err) / (std**2), dim=1))
 
 
+def position_command_b_error_l2(
+    env: ManagerBasedRLEnv, command_name: str, asset_cfg: SceneEntityCfg
+) -> torch.Tensor:
+    """Dense end-effector position error in the robot's base frame.
+
+    The exponential tracking reward becomes numerically zero when the gripper is
+    far away from the target. This L2 term keeps providing a useful gradient so
+    PPO can discover how to move the arm toward the target before the sparse
+    exponential reward becomes reachable.
+    """
+    asset: RigidObject = env.scene[asset_cfg.name]
+    command = env.command_manager.get_command(command_name)
+    root_idx = asset.find_bodies("base_link")[0][0]
+    end_effector_curr_pos_b = (
+        asset.data.body_pos_w[:, asset_cfg.body_ids[0]]
+        - asset.data.body_pos_w[:, root_idx]
+    )
+    end_effector_curr_pos_b = quat_apply_inverse(
+        asset.data.body_quat_w[:, root_idx], end_effector_curr_pos_b
+    )
+    ee_pos_err = end_effector_curr_pos_b[:, :3] - command[:, :3]
+    return torch.norm(ee_pos_err, dim=1)
+
+
 def position_command_error_exp(
     env: ManagerBasedRLEnv,
     command_name: str,

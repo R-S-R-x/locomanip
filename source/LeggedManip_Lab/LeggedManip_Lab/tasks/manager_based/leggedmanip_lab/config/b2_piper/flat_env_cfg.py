@@ -50,6 +50,9 @@ class B2PiperTaskBObservationsCfg(ObservationsCfg):
             scale=0.05,
         )
         actions = ObsTerm(func=mdp.last_action)
+        current_ee_pose = ObsTerm(
+            func=mdp.end_effector_link0_relative_pose,
+        )
         target_pose_commands = ObsTerm(
             func=mdp.generated_commands,
             params={"command_name": "ee_pose"},
@@ -93,15 +96,15 @@ class B2PiperFlatEnvCfg(LeggedManipLabEnvCfg):
         self.commands.base_velocity.limit_ranges.ang_vel_z = (-0.50, 0.50)
         self.commands.ee_pose.curriculum_enabled = True
         self.commands.ee_pose.resampling_time_range = (6.0, 8.0)
-        self.commands.ee_pose.ranges.pos_x = (0.50, 0.65)
-        self.commands.ee_pose.ranges.pos_y = (-0.05, 0.05)
-        self.commands.ee_pose.ranges.pos_z = (-0.38, -0.30)
-        self.commands.ee_pose.ranges.roll = (-0.15, 0.15)
-        self.commands.ee_pose.ranges.pitch = (-0.20, 0.20)
-        self.commands.ee_pose.ranges.yaw = (-0.20, 0.20)
-        self.commands.ee_pose.limit_ranges.pos_x = (0.50, 0.90)
+        self.commands.ee_pose.ranges.pos_x = (0.38, 0.52)
+        self.commands.ee_pose.ranges.pos_y = (-0.04, 0.04)
+        self.commands.ee_pose.ranges.pos_z = (-0.05, 0.12)
+        self.commands.ee_pose.ranges.roll = (-0.10, 0.10)
+        self.commands.ee_pose.ranges.pitch = (-0.12, 0.12)
+        self.commands.ee_pose.ranges.yaw = (-0.12, 0.12)
+        self.commands.ee_pose.limit_ranges.pos_x = (0.35, 0.90)
         self.commands.ee_pose.limit_ranges.pos_y = (-0.25, 0.25)
-        self.commands.ee_pose.limit_ranges.pos_z = (-0.44, -0.24)
+        self.commands.ee_pose.limit_ranges.pos_z = (-0.42, 0.16)
         self.commands.ee_pose.limit_ranges.roll = (-0.30, 0.30)
         self.commands.ee_pose.limit_ranges.pitch = (-0.40, 0.40)
         self.commands.ee_pose.limit_ranges.yaw = (-0.40, 0.40)
@@ -111,7 +114,17 @@ class B2PiperFlatEnvCfg(LeggedManipLabEnvCfg):
 
         # actions
         self.actions.joint_pos.joint_names = B2PIPER_POLICY_JOINT_NAMES
-        self.actions.joint_pos.scale = 0.25
+        self.actions.joint_pos.scale = {
+            ".*_hip_joint": 0.25,
+            ".*_thigh_joint": 0.25,
+            ".*_calf_joint": 0.25,
+            "arm_joint1": 1.00,
+            "arm_joint2": 1.20,
+            "arm_joint3": 1.20,
+            "arm_joint4": 1.00,
+            "arm_joint5": 1.00,
+            "arm_joint6": 1.00,
+        }
         self.actions.joint_pos.clip = None
         self.actions.joint_pos.use_default_offset = True
         self.actions.joint_pos.preserve_order = True
@@ -119,10 +132,21 @@ class B2PiperFlatEnvCfg(LeggedManipLabEnvCfg):
         # rewards
         self.curriculum.lin_vel_cmd_levels.params["reward_term_name"] = "track_lin_vel_xy_exp"
         self.curriculum.ang_vel_cmd_levels.params["reward_term_name"] = "track_ang_vel_z_exp"
-        self.curriculum.pos_cmd_levels.params["success_ratio"] = 0.35
-        self.rewards.end_effector_position_tracking_exp.weight = 3.5
-        self.rewards.end_effector_position_tracking_exp.params["std"] = 0.30
-        self.rewards.end_effector_orientation_tracking.weight = -0.5
+        self.curriculum.pos_cmd_levels.params["success_ratio"] = 0.45
+        self.curriculum.pos_cmd_levels.params["pos_xy_delta"] = 0.05
+        self.curriculum.pos_cmd_levels.params["pos_z_delta"] = 0.025
+        self.curriculum.pos_cmd_levels.params["ori_delta_rad"] = 0.12
+        self.rewards.end_effector_position_tracking_exp.weight = 18.0
+        self.rewards.end_effector_position_tracking_exp.params["std"] = 0.45
+        self.rewards.end_effector_position_error_l2 = RewTerm(
+            func=mdp.position_command_b_error_l2,
+            weight=-4.0,
+            params={
+                "asset_cfg": SceneEntityCfg("robot", body_names="gripper_base"),
+                "command_name": "ee_pose",
+            },
+        )
+        self.rewards.end_effector_orientation_tracking.weight = -0.2
         self.rewards.track_lin_vel_xy_exp.weight = 8.0
         self.rewards.track_lin_vel_xy_exp.params["std"] = 0.35
         self.rewards.track_ang_vel_z_exp.weight = 0.8
@@ -131,8 +155,8 @@ class B2PiperFlatEnvCfg(LeggedManipLabEnvCfg):
         self.rewards.feet_air_time.params["threshold"] = 0.35
         self.rewards.feet_long_air.weight = -0.3
         self.rewards.air_time_variance.weight = -0.5
-        self.rewards.action_rate_l2.weight = -0.04
-        self.rewards.arm_deviation.weight = -0.01
+        self.rewards.action_rate_l2.weight = -0.025
+        self.rewards.arm_deviation.weight = 0.0
         self.rewards.arm_deviation.params["asset_cfg"].joint_names = B2PIPER_JOINT_NAMES[12:18]
         self.rewards.flat_orientation_l2.weight = -0.7
         self.rewards.track_base_height_exp.params["target_height"] = 0.48

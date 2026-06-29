@@ -159,6 +159,9 @@ def pos_cmd_levels(
     env_ids: Sequence[int],
     reward_term_name: str = "end_effector_position_tracking_exp",
     success_ratio: float = 0.8,
+    pos_xy_delta: float = 0.05,
+    pos_z_delta: float = 0.03,
+    ori_delta_rad: float = 3.14 / 18,
 ) -> torch.Tensor:
     cfg = env.command_manager.get_term("ee_pose").cfg
 
@@ -195,16 +198,20 @@ def pos_cmd_levels(
             reward_term_cfg = env.reward_manager.get_term_cfg(reward_term_name)
 
             if reward > reward_term_cfg.weight * success_ratio:
-                pos_delta = torch.tensor([-0.05, 0.05], device=env.device)
-                ori_delta = torch.tensor([-3.14 / 18, 3.14 / 18], device=env.device)
+                pos_xy_delta = torch.tensor([-pos_xy_delta, pos_xy_delta], device=env.device)
+                pos_z_delta = torch.tensor([-pos_z_delta, pos_z_delta], device=env.device)
+                ori_delta = torch.tensor([-ori_delta_rad, ori_delta_rad], device=env.device)
                 force_delta = torch.tensor([-5.0, 5.0], device=env.device)
 
                 # Update position ranges
                 if limit_ranges is not None:
-                    for axis in ["pos_x", "pos_y", "pos_z"]:
+                    for axis in ["pos_x", "pos_y"]:
                         _safe_update_range(
-                            ranges, limit_ranges, axis, pos_delta, env.device
+                            ranges, limit_ranges, axis, pos_xy_delta, env.device
                         )
+                    _safe_update_range(
+                        ranges, limit_ranges, "pos_z", pos_z_delta, env.device
+                    )
                     for axis in ["roll", "pitch", "yaw"]:
                         _safe_update_range(
                             ranges, limit_ranges, axis, ori_delta, env.device

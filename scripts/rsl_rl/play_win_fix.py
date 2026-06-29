@@ -12,7 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Script to play a checkpoint if an RL agent from RSL-RL."""
+"""Script to play a checkpoint if an RL agent from RSL-RL.
+
+python scripts\rsl_rl\play_win_fix.py 
+  --task B2-PIPER-Flat-Play 
+  --checkpoint logs\rsl_rl\b2_piper_flat\2026-06-27_20-00-24_curriculum_v1\model_999.pt 
+  --num_envs 1
+
+"""
 
 """Launch Isaac Sim Simulator first."""
 

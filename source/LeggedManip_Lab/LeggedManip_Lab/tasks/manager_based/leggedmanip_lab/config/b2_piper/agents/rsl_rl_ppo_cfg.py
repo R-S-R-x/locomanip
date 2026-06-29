@@ -31,7 +31,7 @@ class B2PiperFlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
     experiment_name = "b2_piper_flat"
 
     policy = RslRlPpoActorCriticCfg(
-        init_noise_std=0.6,
+        init_noise_std=0.9,
         actor_hidden_dims=[512, 256, 128],
         critic_hidden_dims=[512, 256, 128],
         activation="elu",
@@ -41,7 +41,7 @@ class B2PiperFlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
         hidden_dims=[512, 256, 128],
         activation="elu",
         distribution_cfg=RslRlMLPModelCfg.GaussianDistributionCfg(
-            init_std=0.6,
+            init_std=0.9,
             std_type="log",
         ),
     )
